@@ -21,7 +21,7 @@ DND = DADOS + '/Docentes Nordeste'
 DNR = DADOS + '/Docentes Norte'
 DSD = DADOS + '/Docentes Sudeste'
 DSU = DADOS + '/Docentes Sul'
-ESC = DADOS + '/ESCOLAS'
+ESC = DADOS + '/TURMA'
 
 repositorio = { 
 	'PATH' : PATH,
@@ -52,7 +52,7 @@ def miner(line, ref):
 	ind = 0
 	campos = '('
 	for a in ref[1]:
-		print a[1]
+		# print a[1]
 		if ind != 0 :
 			campos += ','
 		# print int(a[1])
@@ -63,7 +63,7 @@ def miner(line, ref):
 		ind += 1
 		txt = txt[int(a[1]):]
 		
-	# print campos + '),'
+	print campos + '),'
 
 def extractNum(str):
 	num = '';
@@ -76,7 +76,7 @@ def generatorDDL(path, f):
 	arq = open(path + "/" + f,'r')
 
 	txt = ''.join(arq.readlines())
-	
+
 	#txt = txt[txt.startswith('INPUT') + 7 : ]
 
 	ddl = []
@@ -157,7 +157,7 @@ def inputs():
 
 def main():
 	global campos 
-	campos = inputs()[1]['CAMPO']	
+	campos = inputs()[3]['CAMPO']	
 	# Printando informacoes
 	# for element in ddls:
 	# 	k = 0
