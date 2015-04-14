@@ -1,12 +1,7 @@
 DIR = ''
 PATH =  DIR 
-<<<<<<< HEAD
-DADOS = PATH + 'DADOS'
-#dado retirado da tabela de refencia do dados aberto para docente
-=======
 DADOS = PATH + '/DADOS'
 INPUT = PATH + 'INPUTS/'
->>>>>>> b6d0b002b54a11d682d3be033ccc263a2a105cd3
 
 #dado retirado da tabela de refencia do dados aberto para docente
 TS_DOCENTES_REF = [5, 13, 3, 3, 5, 4, 1, 1, 1, 4, 3, 2, 9, 3, 2, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 6, 2, 2, 5, 5, 2, 
@@ -56,10 +51,8 @@ def miner(line, ref):
 		campos += "'"+txt[:ref[a]].strip()+"'"+','
 		txt = txt[ref[a]:]
 		a += 1
-<<<<<<< HEAD
 	print campos[:-1]+'),'
-=======
-	print campos[2]
+
 
 def generatorDDL(path, f):
 
@@ -118,7 +111,6 @@ def generatorDDL(path, f):
 	
 	return {'DDL' : ddl, 'FKS' : FKS}
 
->>>>>>> b6d0b002b54a11d682d3be033ccc263a2a105cd3
 from os import listdir
 from os.path import isfile, join, exists
 
@@ -145,7 +137,6 @@ def main():
 	# 		for f in listdir(mypath) :
 	# 			if isfile(join(mypath,f)) :
 	# 				print "#FILE: " + f; 
-<<<<<<< HEAD
 	# 				miner(open(mypath + "/" + f,'r'), repositorio["REFERENCIA"][0])
 	for mypath in repositorio['ESCOLAS'] :
 		if exists(mypath) :
@@ -156,12 +147,10 @@ def main():
 					lines = arq.readlines()
 					# for ln in lines:
 					miner(lines[0], repositorio["REFERENCIA"][1])
-=======
 	# 				arq = open(mypath + "/" + f,'r')
 	# 				lines = arq.readlines()
 	# 				for ln in lines:
 	# 					miner(ln, repositorio["REFERENCIA"][1])
->>>>>>> b6d0b002b54a11d682d3be033ccc263a2a105cd3
 
 
 main()
