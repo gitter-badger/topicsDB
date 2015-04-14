@@ -65,7 +65,7 @@ def generatorDDL(path, f):
 	arq = open(path + "/" + f,'r')
 
 	txt = ''.join(arq.readlines())
-	txt = txt[txt.index('INPUT\r\n') + 7 : ]
+	# txt = txt[txt.index('INPUT\r\n') + 7 : ]
 	
 	ddl = []
 	ddl.append("--")
@@ -82,7 +82,7 @@ def generatorDDL(path, f):
 	# gerando as colunas 
 	for line in txt.split("\n") :
 		campos = line.split("\t")
-		if len(campos) == 4 :
+		if len(campos) == 4 and campos[0].strip() != "FORMAT":
 
 			n_campo = campos[1].lower().strip()
 
@@ -96,7 +96,7 @@ def generatorDDL(path, f):
 
 			info_c = n_campo.strip()
 
-			if campos[2][0] != '$' : 
+			if campos[2][0].isdigit() : 
 				info_c += ' numeric'
 				field.append(1)
 			else :
@@ -136,18 +136,17 @@ def main():
 			ddls.append(generatorDDL(repositorio['INPUT'], f))
 
 	# Printando informacoes
-	# for element in ddls:
-	# 	print element["CAMPO"]
-	# 	k = 0
-	# 	t = len(element['DDL'])
-	# 	for ddl in element['DDL']:
-	# 		imp = ""
-	# 		if k > 3 and k != t - 1:
-	# 			imp += '\t'
-	# 		imp += ddl
-	# 		print imp
-	# 		k += 1
-	# 	print ''
+	for element in ddls:
+		k = 0
+		t = len(element['DDL'])
+		for ddl in element['DDL']:
+			imp = ""
+			if k > 3 and k != t - 1:
+				imp += '\t'
+			imp += ddl
+			print imp
+			k += 1
+		print ''
 
 
 	# for mypath in repositorio['ESCOLAS'] :

@@ -235,8 +235,8 @@ CREATE TABLE input_sas_escola(
 	cod_orgao_regional_inep varchar(256) NOT NULL,
 	desc_situacao_funcionamento varchar(256) NOT NULL,
 	desc_situacao_censo2013 varchar(256) NOT NULL,
-	dt_ano_letivo_inicio numeric NOT NULL,
-	dt_ano_letivo_termino numeric NOT NULL,
+	dt_ano_letivo_inicio varchar(256) NOT NULL,
+	dt_ano_letivo_termino varchar(256) NOT NULL,
 	fk_cod_estado numeric NOT NULL,
 	sigla varchar(256) NOT NULL,
 	fk_cod_municipio numeric NOT NULL,
@@ -369,7 +369,6 @@ CREATE TABLE input_sas_escola(
 	id_espaco_turma_pba varchar(256) NOT NULL,
 	id_abre_final_semana varchar(256) NOT NULL,
 	id_proposta_pedag_alternancia varchar(256) NOT NULL,
-	dt_ano_letivo_inicio numeric NOT NULL,
 	CONSTRAINT pk_cod_entidade PRIMARY KEY(pk_cod_entidade)
 );
 
