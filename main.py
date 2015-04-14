@@ -5,7 +5,7 @@ DIR = './'
 PATH =  DIR 
 DADOS = PATH + '/DADOS'
 INPUT = PATH + 'INPUTS/'
-
+campos = []
 #dado retirado da tabela de refencia do dados aberto para docente
 TS_DOCENTES_REF = [5, 13, 3, 3, 5, 4, 1, 1, 1, 4, 3, 2, 9, 3, 2, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 6, 2, 2, 5, 5, 2, 
 100, 9, 1, 4, 6, 2, 2, 5, 5, 2, 100, 9, 1, 4, 6, 2, 2, 5, 5, 2, 100, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -45,24 +45,39 @@ repositorio = {
 # 	print campos
 
 def miner(line, ref):
+	# print valores
 	# for txt in arq.readlines() :
 	txt = line
-#	txt = txt.replace(" ","_")
-	a = 0
+	# txt = txt.replace(" ","_")
+	ind = 0
 	campos = '('
-	while a < len(ref) :
-		campos += "'"+txt[:ref[a]].strip()+"'"+','
-		txt = txt[ref[a]:]
-		a += 1
-	print campos[:-1]+'),'
+	for a in ref[1]:
+		print a[1]
+		if ind != 0 :
+			campos += ','
+		# print int(a[1])
+		if ref[0][ind] == 3:
+			campos += "'"+txt[:int(a[1])].strip()+"'"
+		else:
+			campos += txt[:int(a[1])].strip()
+		ind += 1
+		txt = txt[int(a[1]):]
+		
+	# print campos + '),'
 
+def extractNum(str):
+	num = '';
+	for x in str : 
+		if x.isdigit() :
+			num += x
+	return num
 
 def generatorDDL(path, f):
 	arq = open(path + "/" + f,'r')
 
 	txt = ''.join(arq.readlines())
-	txt = txt[txt.index('INPUT\r\n') + 7 : ]
-	
+	#txt = txt[txt.startswith('INPUT') + 7 : ]
+
 	ddl = []
 	ddl.append("--")
 	ddl.append("-- " + f)
@@ -82,7 +97,7 @@ def generatorDDL(path, f):
 
 			n_campo = campos[1].lower().strip()
 
-			nome.append(n_campo)
+			nome.append([n_campo, extractNum(campos[2])])
 
 			if n_campo.startswith('fk_') :
 				FKS.append(n_campo)
@@ -91,6 +106,7 @@ def generatorDDL(path, f):
 				PKS.append(n_campo)
 
 			info_c = n_campo.strip()
+
 			if campos[2][0] != '$' : 
 				info_c += ' numeric'
 				field.append(1)
@@ -117,13 +133,13 @@ def generatorDDL(path, f):
 	ddl.append(");")
 	# print ddl
 	# print FKS
-	
+
 	return {'DDL' : ddl, 'CAMPO' : [field, nome]}
 
 def inputs():
 	ddls = []
 	for f in listdir(repositorio['INPUT']) :
-		if isfile(join(repositorio['INPUT'],f)) :
+		if  f[-4:] == ".sas" and isfile(join(repositorio['INPUT'],f)) :
 			ddls.append(generatorDDL(repositorio['INPUT'], f))
 	return ddls
 	# for element in ddls:
@@ -138,11 +154,23 @@ def inputs():
 	# 		k += 1
 	# 	print ''
 
-
 def main():
-	
-	print inputs()
-	
+	global campos 
+	campos = inputs()[1]['CAMPO']	
+	# Printando informacoes
+	# for element in ddls:
+	# 	print element["CAMPO"]
+	# 	k = 0
+	# 	t = len(element['DDL'])
+	# 	for ddl in element['DDL']:
+	# 		imp = ""
+	# 		if k > 3 and k != t - 1:
+	# 			imp += '\t'
+	# 		imp += ddl
+	# 		print imp
+	# 		k += 1
+	# 	print ''
+
 
 	# for mypath in repositorio['ESCOLAS'] :
 	# 	if exists(mypath) :
@@ -150,19 +178,19 @@ def main():
 	# 			if isfile(join(mypath,f)) :
 	# 				print "#FILE: " + f; 
 	# 				miner(open(mypath + "/" + f,'r'), repositorio["REFERENCIA"][0])
-	# for mypath in repositorio['ESCOLAS'] :
-	# 	if exists(mypath) :
-	# 		for f in listdir(mypath) :
-	# 			if isfile(join(mypath,f)) :
-	# 				print "#FILE: " + f; 
-					# arq = open(mypath + "/" + f,'r')
+	for mypath in repositorio['ESCOLAS'] :
+		if exists(mypath) :
+			for f in listdir(mypath) :
+				if isfile(join(mypath,f)) :
+					print "#FILE: " + f; 
+					arq = open(mypath + "/" + f,'r')
 					# lines = arq.readlines()
 					# for ln in lines:
 					# miner(lines[0], repositorio["REFERENCIA"][1])
-	# 				arq = open(mypath + "/" + f,'r')
-	# 				lines = arq.readlines()
-	# 				for ln in lines:
-	# 					miner(ln, repositorio["REFERENCIA"][1])
+					# arq = open(mypath + "/" + f,'r')
+					lines = arq.readlines()
+					# for ln in lines:
+					miner(lines[0], campos)
 
 
 main()
