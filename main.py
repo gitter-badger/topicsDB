@@ -124,7 +124,7 @@ def generatorDDL(path, f):
 			ddl.append(info_c)
 
 	# gerando a lista de chaves primarias
-	pk_nome = "pk"
+	pk_nome = "pk_"+f[:-4].lower()
 	pk_campos = ""
 	i = 0
 	for pk in PKS :
@@ -173,7 +173,7 @@ def readinputs():
 	for f in listdir(repositorio['INPUT']) :
 		if  f[-4:] == ".sas" and isfile(join(repositorio['INPUT'],f)) :
 			ddls.append(generatorDDL(repositorio['INPUT'], f))
-	# printDDL(ddls)
+	printDDL(ddls)
 	return ddls
 
 def main():
