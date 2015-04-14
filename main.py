@@ -1,6 +1,6 @@
-DIR = '../'
+DIR = ''
 PATH =  DIR 
-DADOS = PATH + '/DADOS'
+DADOS = PATH + 'DADOS'
 #dado retirado da tabela de refencia do dados aberto para docente
 
 TS_DOCENTES_REF = [5, 13, 3, 3, 5, 4, 1, 1, 1, 4, 3, 2, 9, 3, 2, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 6, 2, 2, 5, 5, 2, 
@@ -8,7 +8,7 @@ TS_DOCENTES_REF = [5, 13, 3, 3, 5, 4, 1, 1, 1, 4, 3, 2, 9, 3, 2, 9, 2, 2, 2, 2, 
 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 3, 3, 4,
 9, 9, 3, 2, 9, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
-TS_ESCOLA = [5,9,100,10,15,1,20,20,3,2,9,9,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+TS_ESCOLA = [5,9,100,10,15,1,20,20,3,2,9,9,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,1,1,1]
 
@@ -37,17 +37,18 @@ repositorio = {
 # 		txt = txt[ref[a]:]
 # 		a += 1
 # 	print campos
+
 def miner(line, ref):
 	# for txt in arq.readlines() :
 	txt = line
 #	txt = txt.replace(" ","_")
 	a = 0
-	campos = []
+	campos = '('
 	while a < len(ref) :
-		campos.append(txt[:ref[a]])
+		campos += "'"+txt[:ref[a]].strip()+"'"+','
 		txt = txt[ref[a]:]
 		a += 1
-	print campos[2]
+	print campos[:-1]+'),'
 from os import listdir
 from os.path import isfile, join, exists
 
@@ -66,8 +67,8 @@ def main():
 					print "#FILE: " + f; 
 					arq = open(mypath + "/" + f,'r')
 					lines = arq.readlines()
-					for ln in lines:
-						miner(ln, repositorio["REFERENCIA"][1])
+					# for ln in lines:
+					miner(lines[0], repositorio["REFERENCIA"][1])
 
 
 main()
