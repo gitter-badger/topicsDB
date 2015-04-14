@@ -68,12 +68,17 @@ def generatorDDL(path, f):
 	FKS = []
 	PKS = [] # Nao eh possivel reestabelecer a chave estrangeira
 
+	field = []
+	nome = []
+
 	# gerando as colunas 
 	for line in txt.split("\n") :
 		campos = line.split("\t")
 		if len(campos) == 4 :
 
-			n_campo = campos[1].lower()
+			n_campo = campos[1].lower().strip()
+
+			nome.append(n_campo)
 
 			if n_campo.startswith('fk_') :
 				FKS.append(n_campo)
@@ -84,8 +89,10 @@ def generatorDDL(path, f):
 			info_c = n_campo.strip()
 			if campos[2][0] != '$' : 
 				info_c += ' numeric'
+				field.append(1)
 			else :
-				info_c += ' varchar'
+				info_c += ' varchar(256)'
+				field.append(3)
 			info_c += ' NOT NULL,'
 
 			ddl.append(info_c)
@@ -107,7 +114,7 @@ def generatorDDL(path, f):
 	# print ddl
 	# print FKS
 	
-	return {'DDL' : ddl, 'FKS' : FKS}
+	return {'DDL' : ddl, 'CAMPO' : [field, nome]}
 
 from os import listdir
 from os.path import isfile, join, exists
