@@ -139,21 +139,22 @@ def main():
 			print imp
 			k += 1
 		print ''
+
 	# for mypath in repositorio['ESCOLAS'] :
 	# 	if exists(mypath) :
 	# 		for f in listdir(mypath) :
 	# 			if isfile(join(mypath,f)) :
 	# 				print "#FILE: " + f; 
 	# 				miner(open(mypath + "/" + f,'r'), repositorio["REFERENCIA"][0])
-	for mypath in repositorio['ESCOLAS'] :
-		if exists(mypath) :
-			for f in listdir(mypath) :
-				if isfile(join(mypath,f)) :
-					print "#FILE: " + f; 
-					arq = open(mypath + "/" + f,'r')
-					lines = arq.readlines()
+	# for mypath in repositorio['ESCOLAS'] :
+	# 	if exists(mypath) :
+	# 		for f in listdir(mypath) :
+	# 			if isfile(join(mypath,f)) :
+	# 				print "#FILE: " + f; 
+					# arq = open(mypath + "/" + f,'r')
+					# lines = arq.readlines()
 					# for ln in lines:
-					miner(lines[0], repositorio["REFERENCIA"][1])
+					# miner(lines[0], repositorio["REFERENCIA"][1])
 	# 				arq = open(mypath + "/" + f,'r')
 	# 				lines = arq.readlines()
 	# 				for ln in lines:
