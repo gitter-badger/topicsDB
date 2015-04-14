@@ -1,4 +1,7 @@
-DIR = ''
+from os import listdir
+from os.path import isfile, join, exists
+
+DIR = './'
 PATH =  DIR 
 DADOS = PATH + '/DADOS'
 INPUT = PATH + 'INPUTS/'
@@ -55,7 +58,6 @@ def miner(line, ref):
 
 
 def generatorDDL(path, f):
-
 	arq = open(path + "/" + f,'r')
 
 	txt = ''.join(arq.readlines())
@@ -118,27 +120,29 @@ def generatorDDL(path, f):
 	
 	return {'DDL' : ddl, 'CAMPO' : [field, nome]}
 
-from os import listdir
-from os.path import isfile, join, exists
-
-def main():
-	
+def inputs():
 	ddls = []
 	for f in listdir(repositorio['INPUT']) :
 		if isfile(join(repositorio['INPUT'],f)) :
 			ddls.append(generatorDDL(repositorio['INPUT'], f))
+	return ddls
+	# for element in ddls:
+	# 	k = 0
+	# 	t = len(element['DDL'])
+	# 	for ddl in element['DDL']:
+	# 		imp = ""
+	# 		if k > 3 and k != t - 1:
+	# 			imp += '\t'
+	# 		imp += ddl
+	# 		print imp
+	# 		k += 1
+	# 	print ''
 
-	for element in ddls:
-		k = 0
-		t = len(element['DDL'])
-		for ddl in element['DDL']:
-			imp = ""
-			if k > 3 and k != t - 1:
-				imp += '\t'
-			imp += ddl
-			print imp
-			k += 1
-		print ''
+
+def main():
+	
+	print inputs()
+	
 
 	# for mypath in repositorio['ESCOLAS'] :
 	# 	if exists(mypath) :
