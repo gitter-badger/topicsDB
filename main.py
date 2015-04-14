@@ -5,7 +5,9 @@ DIR = './'
 PATH =  DIR 
 DADOS = PATH + '/DADOS'
 INPUT = PATH + 'INPUTS/'
+
 campos = []
+
 #dado retirado da tabela de refencia do dados aberto para docente
 TS_DOCENTES_REF = [5, 13, 3, 3, 5, 4, 1, 1, 1, 4, 3, 2, 9, 3, 2, 9, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 3, 6, 2, 2, 5, 5, 2, 
 100, 9, 1, 4, 6, 2, 2, 5, 5, 2, 100, 9, 1, 4, 6, 2, 2, 5, 5, 2, 100, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -16,20 +18,15 @@ TS_ESCOLA = [5,9,100,10,15,1,20,20,3,2,9,9,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,1,1,1,1]
 
-DCO = DADOS + '/Docentes Centro-Oeste'
-DND = DADOS + '/Docentes Nordeste'
-DNR = DADOS + '/Docentes Norte'
-DSD = DADOS + '/Docentes Sudeste'
-DSU = DADOS + '/Docentes Sul'
 ESC = DADOS + '/ESCOLAS'
+TUR = DADOS + '/TURMAS'
+MAT = DADOS + '/MATRICULAS'
+DOC = DADOS + '/DOCENTES'
 
 repositorio = { 
 	'PATH' : PATH,
-	'DADOS' : DADOS,
 	'INPUT' : INPUT,
-	'DOCENTES': [DCO, DND, DNR, DSD, DSU],
-	'ESCOLAS' :	[ESC],
-	'REFERENCIA' : [TS_DOCENTES_REF,TS_ESCOLA]
+	'DADOS' : [[MAT], [DOC], [ESC],[TUR]] #matricula, docentes, escolas e turmas
 }
 
 # def miner(arq, ref):
@@ -52,18 +49,17 @@ def miner(line, ref):
 	ind = 0
 	campos = '('
 	for a in ref[1]:
-		print a[1]
 		if ind != 0 :
 			campos += ','
 		# print int(a[1])
 		if ref[0][ind] == 3:
 			campos += "'"+txt[:int(a[1])].strip()+"'"
 		else:
-			campos += txt[:int(a[1])].strip()
+			campos += 'NULL' if len(txt[:int(a[1])].strip()) == 0 else txt[:int(a[1])].strip()
 		ind += 1
 		txt = txt[int(a[1]):]
 		
-	# print campos + '),'
+	print campos + '),'
 
 def extractNum(str):
 	num = '';
@@ -114,7 +110,7 @@ def generatorDDL(path, f):
 			else :
 				info_c += ' varchar(256)'
 				field.append(3)
-			info_c += ' NOT NULL,'
+			info_c += ','
 
 			ddl.append(info_c)
 
@@ -137,60 +133,41 @@ def generatorDDL(path, f):
 
 	return {'DDL' : ddl, 'CAMPO' : [field, nome]}
 
-def inputs():
+def printDDL(ddls) :
+	for element in ddls:
+		k = 0
+		t = len(element['DDL'])
+		for ddl in element['DDL']:
+			imp = ""
+			if k > 3 and k != t - 1:
+				imp += '\t'
+			imp += ddl
+			print imp
+			k += 1
+		print ''
+
+def printDADOS(dados) :
+	i = 0
+	for mypath in repositorio['DADOS'] :
+		for element in mypath :
+			if exists(element) :
+				for f in listdir(element) :
+					if isfile(join(element,f)) :
+						print "#FILE: " + f; 
+						arq = open(element + "/" + f,'r')
+						lines = arq.readlines()
+						miner(lines[0], dados[i]['CAMPO'])
+			i += 1
+
+def readinputs():
 	ddls = []
 	for f in listdir(repositorio['INPUT']) :
 		if  f[-4:] == ".sas" and isfile(join(repositorio['INPUT'],f)) :
 			ddls.append(generatorDDL(repositorio['INPUT'], f))
+			printDDL(ddls)
 	return ddls
-	# for element in ddls:
-	# 	k = 0
-	# 	t = len(element['DDL'])
-	# 	for ddl in element['DDL']:
-	# 		imp = ""
-	# 		if k > 3 and k != t - 1:
-	# 			imp += '\t'
-	# 		imp += ddl
-	# 		print imp
-	# 		k += 1
-	# 	print ''
 
 def main():
-	global campos 
-	campos = inputs()[1]['CAMPO']	
-	# Printando informacoes
-	# for element in ddls:
-	# 	k = 0
-	# 	t = len(element['DDL'])
-	# 	for ddl in element['DDL']:
-	# 		imp = ""
-	# 		if k > 3 and k != t - 1:
-	# 			imp += '\t'
-	# 		imp += ddl
-	# 		print imp
-	# 		k += 1
-		# print ''
-
-
-	# for mypath in repositorio['ESCOLAS'] :
-	# 	if exists(mypath) :
-	# 		for f in listdir(mypath) :
-	# 			if isfile(join(mypath,f)) :
-	# 				print "#FILE: " + f; 
-	# 				miner(open(mypath + "/" + f,'r'), repositorio["REFERENCIA"][0])
-	for mypath in repositorio['ESCOLAS'] :
-		if exists(mypath) :
-			for f in listdir(mypath) :
-				if isfile(join(mypath,f)) :
-					print "#FILE: " + f; 
-					arq = open(mypath + "/" + f,'r')
-					# lines = arq.readlines()
-					# for ln in lines:
-					# miner(lines[0], repositorio["REFERENCIA"][1])
-					# arq = open(mypath + "/" + f,'r')
-					lines = arq.readlines()
-					# for ln in lines:
-					miner(lines[0], campos)
-
+	dados = readinputs()
 
 main()
