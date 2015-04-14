@@ -53,6 +53,12 @@ def miner(line, ref):
 		a += 1
 	print campos[:-1]+'),'
 
+def extractNum(str):
+	num = '';
+	for x in str : 
+		if x.isdigit() :
+			num += x
+	return num
 
 def generatorDDL(path, f):
 
@@ -80,7 +86,7 @@ def generatorDDL(path, f):
 
 			n_campo = campos[1].lower().strip()
 
-			nome.append(n_campo)
+			nome.append([n_campo, extractNum(campos[2])])
 
 			if n_campo.startswith('fk_') :
 				FKS.append(n_campo)
@@ -89,6 +95,7 @@ def generatorDDL(path, f):
 				PKS.append(n_campo)
 
 			info_c = n_campo.strip()
+
 			if campos[2][0] != '$' : 
 				info_c += ' numeric'
 				field.append(1)
@@ -115,7 +122,7 @@ def generatorDDL(path, f):
 	ddl.append(");")
 	# print ddl
 	# print FKS
-	
+
 	return {'DDL' : ddl, 'CAMPO' : [field, nome]}
 
 from os import listdir
@@ -125,20 +132,23 @@ def main():
 	
 	ddls = []
 	for f in listdir(repositorio['INPUT']) :
-		if isfile(join(repositorio['INPUT'],f)) :
+		if  f[-4:] == ".sas" and isfile(join(repositorio['INPUT'],f)) :
 			ddls.append(generatorDDL(repositorio['INPUT'], f))
 
-	for element in ddls:
-		k = 0
-		t = len(element['DDL'])
-		for ddl in element['DDL']:
-			imp = ""
-			if k > 3 and k != t - 1:
-				imp += '\t'
-			imp += ddl
-			print imp
-			k += 1
-		print ''
+	# Printando informacoes
+	# for element in ddls:
+	# 	print element["CAMPO"]
+	# 	k = 0
+	# 	t = len(element['DDL'])
+	# 	for ddl in element['DDL']:
+	# 		imp = ""
+	# 		if k > 3 and k != t - 1:
+	# 			imp += '\t'
+	# 		imp += ddl
+	# 		print imp
+	# 		k += 1
+	# 	print ''
+
 
 	# for mypath in repositorio['ESCOLAS'] :
 	# 	if exists(mypath) :
